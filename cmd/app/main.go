@@ -2,6 +2,7 @@ package main
 
 import (
 	"example.com/internal/config"
+	"example.com/internal/storage/postgres"
 	"log/slog"
 	"os"
 )
@@ -20,11 +21,15 @@ func main() {
 	log.Info("server running", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	// TODO: init logger: slog
-
 	// TODO: init router: chi, chi-render
 
-	// TODO: init storage: Postgres || SQLlite
+	storage, err := postgres.New(cfg.StoragePath)
+	if err != nil {
+		log.Error("error creating storage", err)
+		os.Exit(1)
+	}
+
+	_ = storage
 
 	// TODO: run server
 }
