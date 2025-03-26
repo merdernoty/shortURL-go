@@ -1,10 +1,14 @@
 package main
 
 import (
-	"example.com/internal/config"
-	"example.com/internal/storage/postgres"
 	"log/slog"
 	"os"
+	"shortURL-go/internal/config"
+	mwLogger "shortURL-go/internal/http-server/middleware/logger"
+	"shortURL-go/internal/storage/postgres"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 const (
@@ -28,9 +32,13 @@ func main() {
 		log.Error("error creating storage", err)
 		os.Exit(1)
 	}
-
 	_ = storage
-
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.RealIP)
+	router.Use(mwLogger.New(log))
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
 	// TODO: run server
 }
 
