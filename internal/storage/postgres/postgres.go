@@ -97,6 +97,11 @@ func (s *Storage) DeleteURL(ctx context.Context, alias string) error {
 	return nil
 }
 
+func (s *Storage) SaveURL(urlToSave, alias string) (int64, error) {
+    return s.StoreURL(context.Background(), urlToSave, alias)
+}
+
+
 func (s *Storage) Close() {
 	s.db.Close()
 }
